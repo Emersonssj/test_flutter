@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:teste_flutter/features/tables/stores/table.store.dart';
+import 'package:teste_flutter/features/tables/stores/table_store.dart';
 import 'package:teste_flutter/features/tables/widgets/customers_counter.widget.dart';
 import 'package:teste_flutter/features/tables/widgets/table_modal_widget.dart';
 import 'package:teste_flutter/utils/extension_methos/material_extensions_methods.dart';

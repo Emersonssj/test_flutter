@@ -2,11 +2,12 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:teste_flutter/features/customers/entities/customer.entity.dart';
-import 'package:teste_flutter/features/customers/stores/customers.store.dart';
-import 'package:teste_flutter/shared/widgets/modal.widget.dart';
-import 'package:teste_flutter/shared/widgets/primary_button.widget.dart';
-import 'package:teste_flutter/shared/widgets/secondary_button.widget.dart';
+
+import '../entities/customer_entity.dart';
+import '../stores/customers_store.dart';
+import '../../../shared/widgets/primary_button.widget.dart';
+import '../../../shared/widgets/secondary_button.widget.dart';
+import '../../../shared/widgets/modal_widget.dart';
 
 class EditCustomerModal extends StatefulWidget {
   const EditCustomerModal({super.key, this.customer});
@@ -63,7 +64,7 @@ class _EditCustomerModalState extends State<EditCustomerModal> {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: Modal(
+      child: ModalWidget(
         width: 280,
         title: '${customer == null ? 'Novo' : 'Editar'} cliente',
         content: [

@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:teste_flutter/features/customers/entities/customer.entity.dart';
-import 'package:teste_flutter/features/customers/stores/customers.store.dart';
-import 'package:teste_flutter/features/customers/widgets/edit_customer_modal.widget.dart';
 
-class CustomerSearchField extends StatelessWidget {
-  const CustomerSearchField({
+import '../../customers/entities/customer_entity.dart';
+import '../../customers/stores/customers_store.dart';
+import '../../customers/widgets/edit_customer_modal.widget.dart';
+
+class CustomerSearchFieldWidget extends StatefulWidget {
+  const CustomerSearchFieldWidget({
     super.key,
     required this.addCustomer,
   });
-
   final void Function(CustomerEntity customer) addCustomer;
 
   @override
-  Widget build(BuildContext context) {
-    final CustomersStore customersStore = GetIt.I<CustomersStore>();
-    final TextEditingController searchController = TextEditingController();
+  State<CustomerSearchFieldWidget> createState() => _CustomerSearchFieldWidgetState();
+}
 
+class _CustomerSearchFieldWidgetState extends State<CustomerSearchFieldWidget> {
+  final CustomersStore customersStore = GetIt.I<CustomersStore>();
+  final TextEditingController searchController = TextEditingController();
+
+  void clearInputs() {
+    customersStore.setSearchInputValue('');
+    setState(() {
+      searchController.text = '';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
         return Stack(
@@ -89,9 +101,12 @@ class CustomerSearchField extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
-                                    addCustomer(customersStore.filteredCustomers[index]);
+                                    widget.addCustomer(customersStore.filteredCustomers[index]);
                                     customersStore.removeCustomer(customersStore.filteredCustomers[index]);
-                                    searchController.clear();
+                                    customersStore.setSearchInputValue('');
+                                    setState(() {
+                                      searchController.text = '';
+                                    });
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 6),

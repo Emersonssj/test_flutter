@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:teste_flutter/features/tables/stores/tables.store.dart';
-import 'package:teste_flutter/features/tables/widgets/table_card.widget.dart';
+
+import '../stores/tables_store.dart';
+import 'table_card.widget.dart';
 
 class TablesList extends StatelessWidget {
   TablesList({super.key});

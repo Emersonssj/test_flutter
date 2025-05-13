@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:teste_flutter/features/tables/views/tables.page.dart';
+import 'package:teste_flutter/features/tables/views/tables_page.dart';
 import 'package:teste_flutter/themes/theme.dart';
 
 import 'injection_container.dart' as ic;

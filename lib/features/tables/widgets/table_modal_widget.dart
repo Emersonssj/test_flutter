@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:teste_flutter/features/customers/stores/customers.store.dart';
-import 'package:teste_flutter/features/tables/stores/table.store.dart';
-import 'package:teste_flutter/features/tables/stores/tables.store.dart';
-import 'package:teste_flutter/features/tables/widgets/customer_card_widget.dart';
-import 'package:teste_flutter/features/tables/widgets/customer_search_field.dart';
-import 'package:teste_flutter/shared/widgets/modal.widget.dart';
-import 'package:teste_flutter/shared/widgets/primary_button.widget.dart';
-import 'package:teste_flutter/shared/widgets/secondary_button.widget.dart';
 
-import '../../customers/entities/customer.entity.dart';
+import '../../../shared/widgets/modal_widget.dart';
+import '../../../shared/widgets/primary_button.widget.dart';
+import '../../../shared/widgets/secondary_button.widget.dart';
+import '../../customers/entities/customer_entity.dart';
+import '../../customers/stores/customers_store.dart';
+import '../stores/table_store.dart';
+import '../stores/tables_store.dart';
+import 'customer_card_widget.dart';
+import 'customer_search_field.dart';
 
 class TableModalWidget extends StatefulWidget {
   const TableModalWidget({
@@ -70,121 +70,117 @@ class _TableModalWidgetState extends State<TableModalWidget> {
       builder: (context) {
         return Form(
           key: _formKey,
-          child: Modal(
-            width: 340,
+          child: ModalWidget(
+            width: 350,
+            contentMainAxisSize: MainAxisSize.max,
             title:
                 widget.oldTableStore == null ? 'Criar mesa' : 'Editar informações da ${newTableStore.identification}',
             content: [
               SizedBox(
-                height: 700,
                 child: SingleChildScrollView(
-                  child: Observer(
-                    builder: (context) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Identificação da mesa',
+                        ),
+                        controller: identificationController,
+                        onChanged: newTableStore.setIdentification,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Informação temporaria para ajudar na identificação do cliente.',
+                        style: greyTextStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      const Divider(),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Clientes nesta conta',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Text(
+                        'Associe os clientes aos pedidos para salvar o pedido no histórico do cliente, pontuar no fidelidade e fazer pagamento no fiado.',
+                        style: greyTextStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
                         children: [
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Identificação da mesa',
-                            ),
-                            controller: identificationController,
-                            onChanged: newTableStore.setIdentification,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Campo obrigatório';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Informação temporaria para ajudar na identificação do cliente.',
-                            style: greyTextStyle,
-                          ),
-                          const SizedBox(height: 8),
-                          const Divider(),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Clientes nesta conta',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: TextField(
+                              enabled: false,
+                              readOnly: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Quantidade de pessoas',
+                              ),
+                              style: const TextStyle(color: Colors.black),
+                              controller: cardQuantityController,
                             ),
                           ),
-                          const Text(
-                            'Associe os clientes aos pedidos para salvar o pedido no histórico do cliente, pontuar no fidelidade e fazer pagamento no fiado.',
-                            style: greyTextStyle,
-                          ),
-                          const SizedBox(height: 8),
                           Row(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  enabled: false,
-                                  readOnly: true,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Quantidade de pessoas',
-                                  ),
-                                  style: const TextStyle(color: Colors.black),
-                                  controller: cardQuantityController,
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    child: const Icon(Icons.remove),
-                                    onTap: () {
-                                      newTableStore.removeLastCustomer();
-                                      setState(() {
-                                        cardQuantityController.text = newTableStore.customers.length.toString();
-                                      });
-                                    },
-                                  ),
-                                  GestureDetector(
-                                    child: const Icon(Icons.add),
-                                    onTap: () {
-                                      newTableStore.addCustomer(
-                                        CustomerEntity(
-                                          id: 0,
-                                          name: '',
-                                          phone: '',
-                                        ),
-                                      );
-                                      setState(() {
-                                        cardQuantityController.text = newTableStore.customers.length.toString();
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: newTableStore.customers.length,
-                            itemBuilder: (context, index) {
-                              return CustomerCardWidget(
-                                customer: newTableStore.customers[index],
-                                removeTableCustomer: () {
-                                  customersStore.addCustomer(newTableStore.customers[index]);
-                                  newTableStore.removeTableCustomer(newTableStore.customers[index]);
+                              GestureDetector(
+                                child: const Icon(Icons.remove),
+                                onTap: () {
+                                  newTableStore.removeLastCustomer();
                                   setState(() {
                                     cardQuantityController.text = newTableStore.customers.length.toString();
                                   });
                                 },
-                                index: index,
-                                setCustomerAtIndex: newTableStore.updateCustomerAtIndex,
-                              );
-                            },
-                          ),
-                          CustomerSearchField(
-                            addCustomer: newTableStore.addCustomer,
+                              ),
+                              GestureDetector(
+                                child: const Icon(Icons.add),
+                                onTap: () {
+                                  newTableStore.addCustomer(
+                                    CustomerEntity(
+                                      id: 0,
+                                      name: '',
+                                      phone: '',
+                                    ),
+                                  );
+                                  setState(() {
+                                    cardQuantityController.text = newTableStore.customers.length.toString();
+                                  });
+                                },
+                              ),
+                            ],
                           ),
                         ],
-                      );
-                    },
+                      ),
+                      const SizedBox(height: 8),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: newTableStore.customers.length,
+                        itemBuilder: (context, index) {
+                          return CustomerCardWidget(
+                            customer: newTableStore.customers[index],
+                            removeTableCustomer: () {
+                              customersStore.addCustomer(newTableStore.customers[index]);
+                              newTableStore.removeTableCustomer(newTableStore.customers[index]);
+                              setState(() {
+                                cardQuantityController.text = newTableStore.customers.length.toString();
+                              });
+                            },
+                            index: index,
+                            setCustomerAtIndex: newTableStore.updateCustomerAtIndex,
+                          );
+                        },
+                      ),
+                      CustomerSearchFieldWidget(
+                        addCustomer: newTableStore.addCustomer,
+                      ),
+                    ],
                   ),
                 ),
               ),

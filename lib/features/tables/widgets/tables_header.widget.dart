@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:teste_flutter/features/tables/stores/tables.store.dart';
-import 'package:teste_flutter/features/tables/widgets/customers_counter.widget.dart';
-import 'package:teste_flutter/features/tables/widgets/table_modal_widget.dart';
-import 'package:teste_flutter/shared/widgets/search_input.widget.dart';
-import 'package:teste_flutter/utils/extension_methos/material_extensions_methods.dart';
+
+import '../stores/tables_store.dart';
+import 'customers_counter.widget.dart';
+import 'table_modal_widget.dart';
+import '../../../shared/widgets/search_input.widget.dart';
+import '../../../utils/extension_methos/material_extensions_methods.dart';
 
 class TablesHeader extends StatelessWidget {
   TablesHeader({super.key});
